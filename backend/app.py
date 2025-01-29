@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app,resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
+CORS(app,resources={r"/*": {"origins": "https://ai-resume-creator.netlify.app"}})  # Enable CORS for all routes
 
 # Configure Gemini API
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

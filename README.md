@@ -19,7 +19,7 @@ Follow these steps to set up the project locally.
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ai-resume-creator.git
+git clone -b localhost https://github.com/yourusername/ai-resume-creator.git
 cd ai-resume-creator
 ```
 
