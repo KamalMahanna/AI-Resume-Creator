@@ -19,18 +19,12 @@ Follow these steps to set up the project locally.
 ### Clone the Repository
 
 ```bash
-git clone -b localhost https://github.com/yourusername/ai-resume-creator.git
-cd ai-resume-creator
+git clone -b localhost https://github.com/KamalMahanna/AI-Resume-Creator
+cd AI-Resume-Creator
 ```
 
 ### Frontend Setup
 
-```bash
-cd frontend
-pnpm install
-```
-
-*If you prefer using npm, you can run:*
 
 ```bash
 cd frontend

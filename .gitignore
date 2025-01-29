@@ -88,7 +88,6 @@ dmypy.json
 *.code-workspace
 .clinerules
 
-
 # Temporary files
 *.swp
 *.swo
