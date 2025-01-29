@@ -186,8 +186,8 @@ Please follow above provided template style and made changes accordingly the det
 
     const text = await response.text();
     
-    // Look specifically for ```javascript code block
-    const codeMatch = text.match(/```react\n([\s\S]*?)```/);
+    // Look for code blocks with different language identifiers
+    const codeMatch = text.match(/```(?:react|javascript|jsx)\n([\s\S]*?)```/);
     
     const modelResponse: ChatMessage = {
       role: "model",
