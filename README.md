@@ -4,7 +4,7 @@ AI Resume Creator is a powerful tool designed to help you generate professional 
 
 ## Live Demo
 
-Try the hosted website [here](https://example.com).
+Try the hosted website [here](https://ai-resume-creator.netlify.app).
 
 ## Installation
 
