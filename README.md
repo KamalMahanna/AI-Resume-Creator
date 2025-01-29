@@ -60,13 +60,6 @@ cd frontend
 pnpm dev
 ```
 
-*Or with npm:*
-
-```bash
-cd frontend
-npm run dev
-```
-
 Open your browser and navigate to `http://localhost:5173` to view the frontend application.
 
 ### Start the Backend Server
