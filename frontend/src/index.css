@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #0f172a;
+    --card: rgba(30, 41, 59, 0.7);
+    --border: rgba(148, 163, 184, 0.1);
+    --primary: #60a5fa;
+    --primary-hover: #3b82f6;
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-gradient: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
+  }
+}
+
+@layer utilities {
+  /* Modern loading animation */
+  .send-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--glass-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .send-button:hover:not(:disabled) {
+    transform: scale(1.1);
+    background: var(--primary);
+    box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.2);
+  }
+
+  .send-button:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .send-button:disabled {
+    background-color: rgba(59, 130, 246, 0.3);
+    cursor: not-allowed;
+  }
+
+  .circular-progress {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  .circular-progress::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .circular-progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .send-button.loading .circular-progress {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .send-button svg {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+  }
+
+  .send-button.loading svg {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  /* Modern scrollbar styles */
+  .custom-scrollbar {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.8);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Chat container styles */
+  .chat-container {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    padding-right: 6px;
+    padding: 8px; /* Add padding around chat container */
+  }
+
+  /* Textarea specific styles */
+  textarea.hover-scroll {
+    line-height: 1.5;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  textarea.hover-scroll:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.15);
+  }
+
+  textarea.hover-scroll:focus {
+    transform: scale(1.02);
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+
+  /* Fade animations */
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Panel transitions */
+  .panel-transition {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--glass-gradient);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Glass card effect */
+  .glass-card {
+    background: var(--glass-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Glass card hover effect (except for PDF preview) */
+  .glass-card:not(.pdf-preview-container *):hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Chat message animations */
+  .message-bubble {
+    animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: var(--glass-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 4px; /* Add margin to prevent cut-off */
+    transform-origin: center center; /* Control scaling direction */
+  }
+  
+  .message-bubble:hover {
+    transform: scale(1.01);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Enhanced button hover effects */
+  .button-hover {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: var(--glass-gradient);
+    transform-origin: center;
+  }
+
+  .button-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .button-hover:active {
+    transform: scale(0.95);
+  }
+
+  /* Scale animation */
+  .scale-in {
+    animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
