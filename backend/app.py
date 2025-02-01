@@ -1,25 +1,39 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
 
-# Configure Gemini API
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY environment variable is not set")
+def get_api_key():
+    api_key = request.headers.get('X-API-Key')
+    if not api_key:
+        return jsonify({"error": "No API key provided"}), 401
+    return api_key
 
-genai.configure(api_key=GEMINI_API_KEY)
-
-@app.route('/', methods=['POST'])
-def generate_response():
+@app.route('/validate-key', methods=['POST'])
+def validate_key():
+    api_key = get_api_key()
+    if isinstance(api_key, tuple):  # Error response
+        return api_key
+        
     try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
+        # Try a simple generation to validate the key
+        response = model.generate_content("test")
+        return jsonify({"status": "valid"}), 200
+    except Exception as e:
+        return jsonify({"error": "Invalid API key", "message": str(e)}), 401
+
+@app.route('/generate', methods=['POST'])
+def generate_response():
+    api_key = get_api_key()
+    if isinstance(api_key, tuple):  # Error response
+        return api_key
+
+    try:
+        genai.configure(api_key=api_key)
         data = request.get_json()
         history = data.get('history', [])
         message = data.get('message', '')

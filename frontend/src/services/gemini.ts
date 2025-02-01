@@ -168,11 +168,18 @@ Please follow above provided template style and made changes accordingly the det
     ...history, 
     newMessage];
     
+    // Get API key from storage
+    const apiKey = localStorage.getItem('gemini_api_key');
+    if (!apiKey) {
+      throw new Error('API key not found');
+    }
+
     // Send request to local API
-    const response = await fetch('http://127.0.0.1:8000', {
+    const response = await fetch('http://127.0.0.1:8000/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-API-Key': apiKey,
       },
       body: JSON.stringify({
         history: apiHistory,
@@ -225,7 +232,11 @@ Please follow above provided template style and made changes accordingly the det
     console.error('Error generating content:', error);
     
     // Check for rate limit errors
-    if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
+    if (error.message?.includes('No API key provided')) {
+      throw new Error('API key required');
+    } else if (error.message?.includes('Invalid API key')) {
+      throw new Error('Invalid API key');
+    } else if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
       throw new RateLimitError();
     }
     

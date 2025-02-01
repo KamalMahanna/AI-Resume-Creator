@@ -186,6 +186,20 @@
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
 
+  /* API Key Modal specific styles */
+  .api-key-modal {
+    background: var(--glass-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .api-key-modal:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
   /* Chat message animations */
   .message-bubble {
     animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -223,8 +237,52 @@
 
   /* Scale animation */
   .scale-in {
-    animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
+  animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Modal Animation */
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-enter .api-key-modal {
+  transform: scale(0.95) translateY(-20px);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-out;
+}
+
+.modal-enter-active .api-key-modal {
+  transform: scale(1) translateY(0);
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-exit {
+  opacity: 1;
+}
+
+.modal-exit .api-key-modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-exit-active {
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.modal-exit-active .api-key-modal {
+  transform: scale(0.95) translateY(20px);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Override hover effect during animation */
+.modal-enter-active .api-key-modal:hover,
+.modal-exit-active .api-key-modal:hover {
+  transform: none;
+  box-shadow: none;
+}
 }
 
 @keyframes spin {

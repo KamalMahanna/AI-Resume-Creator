@@ -11,6 +11,7 @@ Try the hosted website [here](https://example.com).
 Follow these steps to set up the project locally.
 
 ### Prerequisites
+
 - **Git** installed. You can download it from [here](https://git-scm.com/downloads).
 - **Node.js** and **npm** installed. You can download them from [here](https://nodejs.org/).
 - **Python** installed. You can download it from [here](https://www.python.org/downloads/).
@@ -25,10 +26,8 @@ cd AI-Resume-Creator
 
 ### Frontend Setup
 
-
 ```bash
-cd frontend
-npm install
+cd frontend && npm install
 ```
 
 ### Backend Setup
@@ -37,27 +36,12 @@ npm install
 pip install -r requirements.txt
 ```
 
-### Configuration
-
-Create a `.env` file by copying the example provided:
-
-```bash
-cp .env.example .env
-```
-
-Open the `.env` file in your favorite text editor and add your Gemini API key:
-
-```bash
-GEMINI_API_KEY=your_api_key_here
-```
-
 ## Running the Application
 
 ### Start the Frontend Development Server
 
 ```bash
-cd frontend
-pnpm dev
+cd frontend && npm run dev
 ```
 
 Open your browser and navigate to `http://localhost:5173` to view the frontend application.

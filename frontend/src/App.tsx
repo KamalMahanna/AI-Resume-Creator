@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import CodeBlock from './components/CodeBlock';
-import { RefreshCw, Download, Send } from 'lucide-react';
+import { RefreshCw, Download, Send, Key } from 'lucide-react';
+import { getStoredApiKey, storeApiKey, removeApiKey } from './services/apiKey';
+import APIKeyModal from './components/APIKeyModal';
 import PDFPreview from './components/PDFPreview';
 import Logo from './components/Logo';
 import { generatePDFContent, type GeminiResponse, type ChatMessage } from './services/gemini';
@@ -113,6 +115,9 @@ export default function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [pdfKey, setPdfKey] = useState(0);
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isFirstRequest, setIsFirstRequest] = useState(true);
+  const [apiKeyExists, setApiKeyExists] = useState(!!getStoredApiKey());
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -133,6 +138,13 @@ export default function App() {
 
   const handlePromptSubmit = useCallback(async () => {
     if (!userPrompt.trim()) return;
+
+    // Check for API key before proceeding
+    if (!getStoredApiKey()) {
+      setIsFirstRequest(true);
+      setIsApiKeyModalOpen(true);
+      return;
+    }
 
     const newMessage: ChatMessage = {
       role: "user",
@@ -322,25 +334,55 @@ export default function App() {
       {/* Right Panel - PDF Preview */}
       <div className="w-2/3 h-full flex flex-col overflow-hidden">
         <div className="flex justify-end gap-3 mb-4 mr-4">
-          <button
-            className="px-4 py-2 rounded-xl flex items-center gap-2 button-hover text-[var(--text)]"
-            onClick={handleRefresh}
-          >
-            <RefreshCw size={16} />
-            <span className="font-medium">Refresh</span>
-          </button>
-          <button
-            className="px-4 py-2 rounded-xl flex items-center gap-2 button-hover text-[var(--text)]"
-            onClick={handleDownload}
-            disabled={!pdfContent}
-          >
-            <Download size={16} />
-            <span className="font-medium">Download PDF</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              className="px-4 py-2 rounded-xl flex items-center gap-2 button-hover text-[var(--text)]"
+              onClick={() => setIsApiKeyModalOpen(true)}
+            >
+              <Key size={16} />
+              <span className="font-medium">API Key</span>
+            </button>
+            <button
+              className="px-4 py-2 rounded-xl flex items-center gap-2 button-hover text-[var(--text)]"
+              onClick={handleRefresh}
+            >
+              <RefreshCw size={16} />
+              <span className="font-medium">Refresh</span>
+            </button>
+            <button
+              className="px-4 py-2 rounded-xl flex items-center gap-2 button-hover text-[var(--text)]"
+              onClick={handleDownload}
+              disabled={!pdfContent}
+            >
+              <Download size={16} />
+              <span className="font-medium">Download PDF</span>
+            </button>
+          </div>
         </div>
         <div className="flex-grow glass-card rounded-2xl shadow-lg panel-transition scale-in custom-scrollbar">
           {memoizedPDFPreview}
         </div>
+
+        <APIKeyModal
+          isOpen={isApiKeyModalOpen}
+          onClose={() => {
+            setIsApiKeyModalOpen(false);
+            setIsFirstRequest(false);
+          }}
+          onSave={(apiKey) => {
+            storeApiKey(apiKey);
+            setApiKeyExists(true);
+            if (isFirstRequest && userPrompt) {
+              handlePromptSubmit();
+            }
+          }}
+          onDelete={() => {
+            removeApiKey();
+            setApiKeyExists(false);
+          }}
+          existingKey={apiKeyExists}
+          isFirstRequest={isFirstRequest}
+        />
       </div>
     </div>
   );
