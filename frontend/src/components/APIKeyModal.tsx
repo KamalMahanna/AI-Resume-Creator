@@ -36,7 +36,7 @@ export default function APIKeyModal({
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/validate-key', {
+      const response = await fetch('https://ai-resume-creator.netlify.app/validate-key', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
