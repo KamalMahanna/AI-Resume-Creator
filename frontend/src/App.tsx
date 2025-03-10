@@ -22,40 +22,62 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   section: {
-    marginBottom: 10,
+    marginBottom: 1,
   },
   header: {
-    fontSize: 24,
-    marginBottom: 10,
+    fontSize: 14,
+    marginBottom: 8,
     textAlign: 'center',
   },
   subHeader: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 5,
     color: '#666',
     textAlign: 'center',
   },
   sectionTitle: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 14,
+    marginBottom: 3,
+    marginTop: 5,
     fontWeight: 'bold',
     borderBottomWidth: 1,
-    borderColor: '#000',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    textTransform: 'uppercase',
+    marginLeft: 10,
+    marginRight: 10,
+    paddingBottom: 2,
+    textAlign: 'left',
   },
   experienceTitle: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 12,
+    marginBottom: 3,
     fontWeight: 'bold',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  experienceCompanyName: {
+    // Style for company name if needed
+  },
+  experienceDate: {
+    fontSize: 11,
+    color: '#888',
+    fontStyle: 'italic',
+    textAlign: 'right',
   },
   experienceDetails: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 3,
     color: '#666',
   },
   bulletPoint: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 3,
     marginLeft: 15,
+    lineHeight: 1.3,
+    maxWidth: 500,
   }
 });
 
@@ -64,14 +86,14 @@ const ResumeDocument = () => (
     <Page size="A4" style={styles.page}>
       {/* Header Section */}
       <View style={styles.section}>
-        <Text style={styles.header}>John Doe</Text>
+        <Text style={styles.header}>JOHN DOE</Text>
         <Text style={styles.subHeader}>Software Engineer</Text>
         <Text style={styles.subHeader}>contact@email.com</Text>
       </View>
 
       {/* Summary Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Professional Summary</Text>
+        <Text style={styles.sectionTitle}>SUMMARY</Text>
         <Text style={styles.bulletPoint}>
           Experienced software engineer with expertise in web development
         </Text>
@@ -79,10 +101,11 @@ const ResumeDocument = () => (
 
       {/* Experience Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Experience</Text>
+        <Text style={styles.sectionTitle}>EXPERIENCE</Text>
         <View style={{ marginBottom: 10 }}>
-          <Text style={styles.experienceTitle}>Software Engineer</Text>
-          <Text style={styles.experienceDetails}>Tech Company | 2020 - Present</Text>
+          <View style={styles.experienceTitle}>
+            <Text>Software Engineer, Tech Company</Text> <Text style={styles.experienceDate}>01/2020 - Present</Text>
+          </View>
           <Text style={styles.bulletPoint}>• Spearheaded development of payment gateway integration for e-commerce platform, leading team of 5 developers and reducing transaction processing time by 35%</Text>
           <Text style={styles.bulletPoint}>• Architected and implemented microservices migration strategy for legacy monolithic application, resulting in 60% improved deployment frequency and 45% reduction in system downtime</Text>
         </View>
@@ -90,16 +113,20 @@ const ResumeDocument = () => (
 
       {/* Skills Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Skills</Text>
+        <Text style={styles.sectionTitle}>SKILLS</Text>
         <Text style={styles.bulletPoint}>• JavaScript, React, Node.js</Text>
         <Text style={styles.bulletPoint}>• Python, TypeScript</Text>
       </View>
 
       {/* Education Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Education</Text>
-        <Text style={styles.experienceTitle}>Bachelor of Science in Computer Science</Text>
-        <Text style={styles.experienceDetails}>University Name | 2019</Text>
+        <Text style={styles.sectionTitle}>EDUCATION</Text>
+        <View style={{ marginBottom: 10 }}>
+          <View style={styles.experienceTitle}>
+            <Text>Bachelor of Science in Computer Science, University Name</Text>
+            <Text style={styles.experienceDate}>09/2015 - 05/2019</Text>
+          </View>
+        </View>
       </View>
     </Page>
   </Document>
