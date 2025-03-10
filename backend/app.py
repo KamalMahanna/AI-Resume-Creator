@@ -3,7 +3,7 @@ from flask_cors import CORS
 import google.generativeai as genai
 
 app = Flask(__name__)
-CORS(app,resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
+CORS(app,resources={r"/*": {"origins": "https://ai-resume-creator.netlify.app"}})  # Enable CORS for all routes
 
 def get_api_key():
     api_key = request.headers.get('X-API-Key')
