@@ -25,18 +25,18 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   header: {
-    fontSize: 14,
+    fontSize: 13,
     marginBottom: 8,
     textAlign: 'center',
   },
   subHeader: {
-    fontSize: 11,
+    fontSize: 10,
     marginBottom: 5,
     color: '#666',
     textAlign: 'center',
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 13,
     marginBottom: 3,
     marginTop: 5,
     fontWeight: 'bold',
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   experienceTitle: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 3,
     fontWeight: 'bold',
     flexDirection: 'row',
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     // Style for company name if needed
   },
   experienceDate: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#888',
     fontStyle: 'italic',
     textAlign: 'right',
@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   bulletPoint: {
-    fontSize: 11,
+    fontSize: 10,
     marginBottom: 3,
-    marginLeft: 15,
+    marginLeft: 10, // Changed from 15 to 10
     lineHeight: 1.3,
     maxWidth: 500,
   }
