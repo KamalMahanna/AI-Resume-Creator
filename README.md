@@ -13,45 +13,22 @@ Follow these steps to set up the project locally.
 ### Prerequisites
 
 - **Git** installed. You can download it from [here](https://git-scm.com/downloads).
-- **Node.js** and **npm** installed. You can download them from [here](https://nodejs.org/).
-- **Python** installed. You can download it from [here](https://www.python.org/downloads/).
+- **Docker** installed. You can download it from [here](https://www.docker.com/).
 - **Gemini API Key**. Sign up at [Google AI Studio](https://aistudio.google.com/), click on `Get API key` on your top left, generate a new API key and copy it.
 
 ### Clone the Repository
-
+In your terminal, paste the below command to clone the repository and navigate to the project directory.
 ```bash
 git clone -b localhost https://github.com/KamalMahanna/AI-Resume-Creator
 cd AI-Resume-Creator
 ```
 
-### Frontend Setup
-
+### Start Docker
+In same directory, paste the below command to start the docker containers.
 ```bash
-cd frontend && npm install
+docker-compose up
 ```
 
-### Backend Setup
+Open your browser and navigate to `http://localhost:5173` to access the web app.
 
-```bash
-pip install -r requirements.txt
-```
 
-## Running the Application
-
-### Start the Frontend Development Server
-
-```bash
-cd frontend && npm run dev
-```
-
-Open your browser and navigate to `http://localhost:5173` to view the frontend application.
-
-### Start the Backend Server
-
-In a new terminal, start the backend server using Gunicorn:
-
-```bash
-gunicorn backend.app:app
-```
-
-The backend API will be available at `http://localhost:8000`.
