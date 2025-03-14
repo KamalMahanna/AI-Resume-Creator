@@ -2,10 +2,31 @@ import React, { memo, useEffect, useState } from 'react';
 import { PDFViewer, Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { transform } from '@babel/standalone';
 
-// Register Arial font
+// Register Arial font with all variants
 Font.register({
   family: 'Arial',
-  src: 'https://fonts.cdnfonts.com/s/29107/ARIAL.woff'
+  fonts: [
+    {
+      src: '/fonts/ARIAL.ttf',
+      fontWeight: 'normal',
+      fontStyle: 'normal'
+    },
+    {
+      src: '/fonts/ARIALBD.ttf',
+      fontWeight: 'bold',
+      fontStyle: 'normal'
+    },
+    {
+      src: '/fonts/ARIALI.ttf',
+      fontWeight: 'normal',
+      fontStyle: 'italic'
+    },
+    {
+      src: '/fonts/ARIALI.ttf',
+      fontWeight: 'light',
+      fontStyle: 'italic'
+    }
+  ]
 });
 
 interface PDFPreviewProps {

@@ -20,64 +20,52 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 30,
+    fontFamily: 'Arial',
   },
   section: {
     marginBottom: 1,
   },
   header: {
-    fontSize: 14,
+    fontSize: 13,
     marginBottom: 8,
     textAlign: 'center',
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
   },
   subHeader: {
-    fontSize: 11,
+    fontSize: 10,
     marginBottom: 5,
-    color: '#666',
     textAlign: 'center',
+    fontFamily: 'Arial',
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 11,
     marginBottom: 3,
     marginTop: 5,
+    fontFamily: 'Arial',
     fontWeight: 'bold',
-    borderBottomWidth: 1,
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    textTransform: 'uppercase',
-    marginLeft: 10,
-    marginRight: 10,
+    borderBottom: 1, 
     paddingBottom: 2,
-    textAlign: 'left',
   },
   experienceTitle: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 3,
-    fontWeight: 'bold',
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  experienceCompanyName: {
-    // Style for company name if needed
+    flexDirection: 'row',
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
   },
   experienceDate: {
-    fontSize: 11,
-    color: '#888',
-    fontStyle: 'italic',
+    fontSize: 10,
     textAlign: 'right',
-  },
-  experienceDetails: {
-    fontSize: 11,
-    marginBottom: 3,
-    color: '#666',
+    fontFamily: 'Arial',
+    fontStyle: 'italic',
   },
   bulletPoint: {
-    fontSize: 11,
+    fontSize: 10,
     marginBottom: 3,
-    marginLeft: 15,
     lineHeight: 1.3,
-    maxWidth: 500,
+    fontFamily: 'Arial'
   }
 });
 
@@ -87,8 +75,7 @@ const ResumeDocument = () => (
       {/* Header Section */}
       <View style={styles.section}>
         <Text style={styles.header}>JOHN DOE</Text>
-        <Text style={styles.subHeader}>Software Engineer</Text>
-        <Text style={styles.subHeader}>contact@email.com</Text>
+        <Text style={styles.subHeader}>Software Engineer | contact@email.com | (123) 456-7890 | github.com/johndoe</Text>
       </View>
 
       {/* Summary Section */}
@@ -128,7 +115,7 @@ const ResumeDocument = () => (
           </View>
         </View>
       </View>
-    </Page>
+    </Page> 
   </Document>
 );
 
