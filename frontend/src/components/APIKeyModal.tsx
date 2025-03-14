@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { validateApiKey } from '../services/apiKey';
 import { XCircle, Key, Trash2 } from 'lucide-react';
 import { CSSTransition } from 'react-transition-group';
 
@@ -36,18 +37,9 @@ export default function APIKeyModal({
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/validate-key', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Failed to validate API key');
+      const isValid = await validateApiKey(apiKey);
+      if (!isValid) {
+        setError('Failed to validate API key');
         return;
       }
 
