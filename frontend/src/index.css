@@ -181,7 +181,7 @@
   }
 
   /* Glass card hover effect (except for PDF preview) */
-  .glass-card:not(.pdf-preview-container *):hover {
+  .glass-card:not(.pdf-preview-container *):not(.message-bubble *):hover {
     transform: scale(1.02);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
