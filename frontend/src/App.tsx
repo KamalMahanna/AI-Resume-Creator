@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 30,
-    fontFamily: 'Arial',
   },
   section: {
     marginBottom: 1,
@@ -29,20 +28,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 8,
     textAlign: 'center',
-    fontFamily: 'Arial',
     fontWeight: 'bold',
   },
   subHeader: {
     fontSize: 10,
     marginBottom: 5,
     textAlign: 'center',
-    fontFamily: 'Arial',
   },
   sectionTitle: {
     fontSize: 11,
     marginBottom: 3,
     marginTop: 5,
-    fontFamily: 'Arial',
     fontWeight: 'bold',
     borderBottom: 1, 
     paddingBottom: 2,
@@ -52,20 +48,17 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    fontFamily: 'Arial',
     fontWeight: 'bold',
   },
   experienceDate: {
     fontSize: 10,
     textAlign: 'right',
-    fontFamily: 'Arial',
     fontStyle: 'italic',
   },
   bulletPoint: {
     fontSize: 10,
     marginBottom: 3,
     lineHeight: 1.3,
-    fontFamily: 'Arial'
   }
 });
 
