@@ -14,7 +14,7 @@ export const removeApiKey = (): void => {
 
 export const validateApiKey = async (apiKey: string): Promise<boolean> => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/validate-key', {
+    const response = await fetch('https://ai-resume-creator-tmfr.onrender.com/validate-key', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

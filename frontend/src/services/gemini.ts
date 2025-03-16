@@ -189,7 +189,7 @@ Please follow above provided template style and made changes accordingly the det
     }
 
     // Send request to local API
-    const response = await fetch('http://127.0.0.1:8000/generate', {
+    const response = await fetch('https://ai-resume-creator-tmfr.onrender.com/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
