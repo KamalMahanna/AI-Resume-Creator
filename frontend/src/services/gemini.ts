@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontFamily: 'Arial',
     fontWeight: 'bold',
-    borderBottom: 1, 
+    borderBottom: 1,
     paddingBottom: 2,
   },
   experienceTitle: {
@@ -56,11 +56,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial',
     fontStyle: 'italic',
   },
-  bulletPoint: {
-    fontSize: 10,
-    marginBottom: 3,
+  bulletPointContainer: {
+    flexDirection: 'row',
+    marginBottom: 1,
     lineHeight: 1.3,
-    fontFamily: 'Arial'
+  },
+  bullet: {
+    fontSize: 10,
+    fontFamily: 'Arial',
+    width: 10,
+  },
+  bulletText: {
+    fontSize: 10,
+    fontFamily: 'Arial',
+    flex: 1,
   }
 });
 
@@ -76,9 +85,9 @@ const ResumeDocument = () => (
       {/* Summary Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>SUMMARY</Text>
-        <Text style={styles.bulletPoint}>
-          Experienced software engineer with expertise in web development
-        </Text>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bulletText}>Experienced software engineer with expertise in web development</Text>
+        </View>
       </View>
 
       {/* Experience Section */}
@@ -88,16 +97,28 @@ const ResumeDocument = () => (
           <View style={styles.experienceTitle}>
             <Text>Software Engineer, Tech Company</Text> <Text style={styles.experienceDate}>01/2020 - Present</Text>
           </View>
-          <Text style={styles.bulletPoint}>• Spearheaded development of payment gateway integration for e-commerce platform, leading team of 5 developers and reducing transaction processing time by 35%</Text>
-          <Text style={styles.bulletPoint}>• Architected and implemented microservices migration strategy for legacy monolithic application, resulting in 60% improved deployment frequency and 45% reduction in system downtime</Text>
+          <View style={styles.bulletPointContainer}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>Spearheaded development of payment gateway integration for e-commerce platform, leading team of 5 developers and reducing transaction processing time by 35%</Text>
+          </View>
+          <View style={styles.bulletPointContainer}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>Architected and implemented microservices migration strategy for legacy monolithic application, resulting in 60% improved deployment frequency and 45% reduction in system downtime</Text>
+          </View>
         </View>
       </View>
 
       {/* Skills Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>SKILLS</Text>
-        <Text style={styles.bulletPoint}>• JavaScript, React, Node.js</Text>
-        <Text style={styles.bulletPoint}>• Python, TypeScript</Text>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bullet}>•</Text>
+          <Text style={styles.bulletText}>JavaScript, React, Node.js</Text>
+        </View>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bullet}>•</Text>
+          <Text style={styles.bulletText}>Python, TypeScript</Text>
+        </View>
       </View>
 
       {/* Education Section */}
@@ -110,7 +131,7 @@ const ResumeDocument = () => (
           </View>
         </View>
       </View>
-    </Page> 
+    </Page>
   </Document>
 );
 
