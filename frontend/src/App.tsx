@@ -6,7 +6,7 @@ import { getStoredApiKey, storeApiKey, removeApiKey } from './services/apiKey';
 import APIKeyModal from './components/APIKeyModal';
 import PDFPreview from './components/PDFPreview';
 import Logo from './components/Logo';
-import { generatePDFContent, type GeminiResponse, type ChatMessage } from './services/gemini';
+import { generatePDFContent, type LLMResponse, type ChatMessage } from './services/llm';
 import { pdf, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { transform } from '@babel/standalone';
 
@@ -209,13 +209,13 @@ export default function App() {
       if (error.name === 'RateLimitError') {
         setCooldownSeconds(60);
         frontendOnlyMessages.push({
-          role: "model",
+          role: "assistant",
           parts: [{ text: `Rate limit reached. Please wait ${60} seconds before trying again.` }]
         });
       } else {
         frontendOnlyMessages.push({
-          role: "model",
-          parts: [{ text: 'Failed to update resume. Please try again.' }]
+          role: "assistant",
+          parts: [{ text: `Error: ${error.message || 'Failed to update resume. Please try again.'}` }]
         });
       }
       
@@ -271,7 +271,7 @@ export default function App() {
       // Show PDF error in UI without adding to chat history
       const frontendOnlyMessages = [...messages];
       frontendOnlyMessages.push({
-        role: "model",
+        role: "assistant",
         parts: [{ text: 'Error downloading PDF. Please try again.' }]
       });
       setMessages(frontendOnlyMessages);
@@ -323,7 +323,7 @@ export default function App() {
                       {message.parts[0].text}
                     </ReactMarkdown>
                   </div>
-                  {message.role === 'model' && cooldownSeconds > 0 && (
+                  {message.role === 'assistant' && cooldownSeconds > 0 && (
                     <p className="text-sm text-blue-400 mt-2">
                       Cooldown: {cooldownSeconds} seconds remaining
                     </p>

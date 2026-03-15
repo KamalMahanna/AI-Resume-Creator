@@ -1,78 +1,76 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
+from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 app = Flask(__name__)
-CORS(app,resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
+# Enable CORS for specified origins
+cors_origins = os.getenv(
+    "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+).split(",")
+CORS(app, resources={r"/*": {"origins": cors_origins}})
+
 
 def get_api_key():
-    api_key = request.headers.get('X-API-Key')
+    api_key = request.headers.get("X-API-Key")
     if not api_key:
-        return jsonify({"error": "No API key provided"}), 401
+        return None
     return api_key
 
-@app.route('/validate-key', methods=['POST'])
-def validate_key():
-    api_key = get_api_key()
-    if isinstance(api_key, tuple):  # Error response
-        return api_key
-        
-    try:
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
-        # Try a simple generation to validate the key
-        response = model.generate_content("test")
-        return jsonify({"status": "valid"}), 200
-    except Exception as e:
-        return jsonify({"error": "Invalid API key", "message": str(e)}), 401
 
-@app.route('/generate', methods=['POST'])
+@app.route("/generate", methods=["POST"])
 def generate_response():
     api_key = get_api_key()
-    if isinstance(api_key, tuple):  # Error response
-        return api_key
+    if not api_key:
+        return jsonify({"error": "No API key provided"}), 401
 
     try:
-        genai.configure(api_key=api_key)
         data = request.get_json()
-        history = data.get('history', [])
-        message = data.get('message', '')
+        history = data.get("history", [])
+        message = data.get("message", "")
 
+        # Initialize the LangChain ChatGroq model
+        llm = ChatGroq(
+            model="moonshotai/kimi-k2-instruct-0905", groq_api_key=api_key
+        )
 
-
-        # Initialize Gemini model with the specified version
-        model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
-
-        # Convert history format to Gemini's format
-        chat_history = []
+        # Convert history format to LangChain messages
+        messages = []
         for msg in history:
-            if msg['role'] == 'user':
-                chat_history.append({
-                    'role': 'user',
-                    'parts': [{'text': msg['parts'][0]['text']}]
-                })
-            else:
-                chat_history.append({
-                    'role': 'model',
-                    'parts': [{'text': msg['parts'][0]['text']}]
-                })
+            if not msg.get("parts") or not msg["parts"][0].get("text"):
+                continue
 
-        # Start chat with history
-        chat = model.start_chat(history=chat_history)
-        
-        # Send message and get response
-        response = chat.send_message(message)
-        
-        # Return the response text
-        return response.text
+            content = msg["parts"][0]["text"]
+            role = msg.get("role")
+
+            if role == "system":
+                messages.append(SystemMessage(content=content))
+            elif role == "user":
+                messages.append(HumanMessage(content=content))
+            elif role == "model" or role == "assistant":
+                messages.append(AIMessage(content=content))
+
+        # Only add the current message if it's not already the last message in history
+        if not messages or (message and messages[-1].content != message):
+            messages.append(HumanMessage(content=message))
+
+        # Send messages and get response
+        response = llm.invoke(messages)
+
+        # Ensure response content is a string
+        content = response.content
+        if isinstance(content, list):
+            content = "".join([part.get("text", "") if isinstance(part, dict) else str(part) for part in content])
+
+        # Return the response content text
+        return content
 
     except Exception as e:
         # Log the error
         print(f"Error: {str(e)}")
-        return jsonify({
-            'error': 'Internal server error',
-            'message': str(e)
-        }), 500
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run()
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)

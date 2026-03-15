@@ -139,17 +139,17 @@ export default ResumeDocument;
 `;
 
 export interface ChatMessage {
-  role: "user" | "model";
+  role: "user" | "assistant" | "system";
   parts: { text: string }[];
 }
 
-export interface GeminiResponse {
+export interface LLMResponse {
   message: string;
   reactCode?: string;
   modelResponse: ChatMessage;
 }
 
-export const generatePDFContent = async (history: ChatMessage[], newMessage: ChatMessage): Promise<GeminiResponse> => {
+export const generatePDFContent = async (history: ChatMessage[], newMessage: ChatMessage): Promise<LLMResponse> => {
   try {
     // Always include system prompt in API history
     const systemPrompt = `Act as an advanced resume builder system, who uses react to create ats friendly resume. You use below optimization techniques.
@@ -196,21 +196,21 @@ ${RESUME_TEMPLATE}
 Please follow above provided template style and made changes accordingly the details i will provide.`;
 
     // Create API history with system prompt always first
-    const apiHistory = [{
-      role: "user",
+    const apiHistory: ChatMessage[] = [{
+      role: "system",
       parts: [{ text: systemPrompt }]
     }, 
-    ...history, 
-    newMessage];
+    ...history];
     
     // Get API key from storage
-    const apiKey = localStorage.getItem('gemini_api_key');
+    const apiKey = localStorage.getItem('llm_api_key');
     if (!apiKey) {
       throw new Error('API key not found');
     }
 
     // Send request to local API
-    const response = await fetch('http://127.0.0.1:8000/generate', {
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+    const response = await fetch(`${apiBaseUrl}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -223,16 +223,29 @@ Please follow above provided template style and made changes accordingly the det
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `API request failed with status ${response.status}`);
     }
 
-    const text = await response.text();
+    let text = await response.text();
+    
+    // Check if the response is JSON (sometimes LLM or API returns structured data)
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].text) {
+        text = parsed[0].text;
+      } else if (parsed && typeof parsed === 'object' && parsed.text) {
+        text = parsed.text;
+      }
+    } catch (e) {
+      // Not JSON, proceed with raw text
+    }
     
     // Look for code blocks with different language identifiers
-    const codeMatch = text.match(/```(?:react|javascript|jsx)\n([\s\S]*?)```/);
+    const codeMatch = text.match(/```(?:react|javascript|jsx|tsx|typescript)\n([\s\S]*?)```/);
     
     const modelResponse: ChatMessage = {
-      role: "model",
+      role: "assistant",
       parts: [{ text }]
     };
     
@@ -273,13 +286,6 @@ Please follow above provided template style and made changes accordingly the det
       throw new Error('Invalid API key');
     } else if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
       throw new RateLimitError();
-    }
-    
-    // Check for internal server error (500)
-    if (error.message?.includes('500')) {
-      console.log('Server error detected. Retrying in 60 seconds...');
-      await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 60 seconds
-      return generatePDFContent(history, newMessage); // Retry the request
     }
     
     throw error;

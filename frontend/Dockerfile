@@ -5,11 +5,15 @@ WORKDIR /app
 # Copy package files
 COPY frontend/package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies using npm ci for deterministic installs
+RUN npm ci
 
 # Copy frontend source
 COPY frontend/ .
+
+# Accept build argument for API URL
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 
 # Build the app
 RUN npm run build
@@ -19,9 +23,6 @@ FROM nginx:alpine
 
 # Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy fonts from builder stage
-COPY --from=builder /app/src/assets/fonts/*.ttf /usr/share/nginx/html/fonts/
 
 # Add custom nginx config
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
