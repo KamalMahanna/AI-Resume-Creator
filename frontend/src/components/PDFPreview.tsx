@@ -46,7 +46,8 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
       setError(null);
     } catch (err) {
       console.error('Error rendering PDF:', err);
-      setError('Error rendering PDF. Please check the content format.');
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setError(`Error rendering PDF: ${errorMsg}`);
       setResumeComponent(null);
     }
   }, [content]);
