@@ -1,6 +1,6 @@
 # AI Resume Creator
 
-AI Resume Creator is a powerful tool designed to help you generate professional resumes effortlessly. Leveraging the Gemini API, this application streamlines the resume creation process, ensuring that your resume is not only well-structured but also tailored to your career needs.
+AI Resume Creator is a powerful tool designed to help you generate professional resumes effortlessly. Leveraging the Groq API (specifically the `moonshotai/kimi-k2-instruct-0905` model), this application streamlines the resume creation process, ensuring that your resume is not only well-structured but also tailored to your career needs.
 
 ## Live Demo
 
@@ -14,7 +14,7 @@ Follow these steps to set up the project locally.
 
 - **Git** installed. You can download it from [here](https://git-scm.com/downloads).
 - **Docker** installed. You can download it from [here](https://www.docker.com/).
-- **Gemini API Key**. Sign up at [Google AI Studio](https://aistudio.google.com/), click on `Get API key` on your top left, generate a new API key and copy it.
+- **Groq API Key**. Sign up at [Groq Cloud](https://console.groq.com/keys), generate a new API key and copy it.
 
 ### Clone the Repository
 In your terminal, paste the below command to clone the repository and navigate to the project directory.

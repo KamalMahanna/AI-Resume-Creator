@@ -1,0 +1,22 @@
+[build]
+  command = "cd frontend && npm run build"
+  publish = "frontend/dist"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"
+
+[context.deploy-preview.environment]
+  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"
+
+[context.branch-deploy.environment]
+  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"

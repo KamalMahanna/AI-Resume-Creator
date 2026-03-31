@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     marginTop: 5,
     fontWeight: 'bold',
-    borderBottom: 1, 
+    borderBottom: 1,
     paddingBottom: 2,
   },
   experienceTitle: {
@@ -50,10 +50,20 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontStyle: 'italic',
   },
-  bulletPoint: {
+  bulletPointContainer: {
+    flexDirection: 'row',
+    marginBottom: 1,
+    lineHeight: 1.3,
+  },
+  bullet: {
     fontSize: 10,
-    marginBottom: 3,
-    lineHeight: 1.3
+    fontFamily: 'Arial',
+    width: 10,
+  },
+  bulletText: {
+    fontSize: 10,
+    fontFamily: 'Arial',
+    flex: 1,
   }
 });
 
@@ -69,9 +79,9 @@ const ResumeDocument = () => (
       {/* Summary Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>SUMMARY</Text>
-        <Text style={styles.bulletPoint}>
-          Experienced software engineer with expertise in web development
-        </Text>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bulletText}>Experienced software engineer with expertise in web development</Text>
+        </View>
       </View>
 
       {/* Experience Section */}
@@ -81,16 +91,28 @@ const ResumeDocument = () => (
           <View style={styles.experienceTitle}>
             <Text>Software Engineer, Tech Company</Text> <Text style={styles.experienceDate}>01/2020 - Present</Text>
           </View>
-          <Text style={styles.bulletPoint}>• Spearheaded development of payment gateway integration for e-commerce platform, leading team of 5 developers and reducing transaction processing time by 35%</Text>
-          <Text style={styles.bulletPoint}>• Architected and implemented microservices migration strategy for legacy monolithic application, resulting in 60% improved deployment frequency and 45% reduction in system downtime</Text>
+          <View style={styles.bulletPointContainer}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>Spearheaded development of payment gateway integration for e-commerce platform, leading team of 5 developers and reducing transaction processing time by 35%</Text>
+          </View>
+          <View style={styles.bulletPointContainer}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>Architected and implemented microservices migration strategy for legacy monolithic application, resulting in 60% improved deployment frequency and 45% reduction in system downtime</Text>
+          </View>
         </View>
       </View>
 
       {/* Skills Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>SKILLS</Text>
-        <Text style={styles.bulletPoint}>• JavaScript, React, Node.js</Text>
-        <Text style={styles.bulletPoint}>• Python, TypeScript</Text>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bullet}>•</Text>
+          <Text style={styles.bulletText}>JavaScript, React, Node.js</Text>
+        </View>
+        <View style={styles.bulletPointContainer}>
+          <Text style={styles.bullet}>•</Text>
+          <Text style={styles.bulletText}>Python, TypeScript</Text>
+        </View>
       </View>
 
       {/* Education Section */}
@@ -103,7 +125,7 @@ const ResumeDocument = () => (
           </View>
         </View>
       </View>
-    </Page> 
+    </Page>
   </Document>
 );
 
@@ -111,17 +133,17 @@ export default ResumeDocument;
 `;
 
 export interface ChatMessage {
-  role: "user" | "model";
+  role: "user" | "assistant" | "system";
   parts: { text: string }[];
 }
 
-export interface GeminiResponse {
+export interface LLMResponse {
   message: string;
   reactCode?: string;
   modelResponse: ChatMessage;
 }
 
-export const generatePDFContent = async (history: ChatMessage[], newMessage: ChatMessage): Promise<GeminiResponse> => {
+export const generatePDFContent = async (history: ChatMessage[], newMessage: ChatMessage): Promise<LLMResponse> => {
   try {
     // Always include system prompt in API history
     const systemPrompt = `Act as an advanced resume builder system, who uses react to create ats friendly resume. You use below optimization techniques.
@@ -168,21 +190,25 @@ ${RESUME_TEMPLATE}
 Please follow above provided template style and made changes accordingly the details i will provide.`;
 
     // Create API history with system prompt always first
-    const apiHistory = [{
-      role: "user",
+    const apiHistory: ChatMessage[] = [{
+      role: "system",
       parts: [{ text: systemPrompt }]
     }, 
-    ...history, 
-    newMessage];
+    ...history];
     
     // Get API key from storage
-    const apiKey = localStorage.getItem('gemini_api_key');
+    const apiKey = localStorage.getItem('llm_api_key');
     if (!apiKey) {
       throw new Error('API key not found');
     }
 
-    // Send request to local API
-    const response = await fetch('https://ai-resume-creator-tmfr.onrender.com/generate', {
+    // Send request to backend API
+    // VITE_API_URL is set by build system (environment variable)
+    const apiBaseUrl = import.meta.env.VITE_API_URL;
+    if (!apiBaseUrl) {
+      throw new Error('API URL not configured. Set VITE_API_URL environment variable.');
+    }
+    const response = await fetch(`${apiBaseUrl}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -195,16 +221,29 @@ Please follow above provided template style and made changes accordingly the det
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `API request failed with status ${response.status}`);
     }
 
-    const text = await response.text();
+    let text = await response.text();
+    
+    // Check if the response is JSON (sometimes LLM or API returns structured data)
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].text) {
+        text = parsed[0].text;
+      } else if (parsed && typeof parsed === 'object' && parsed.text) {
+        text = parsed.text;
+      }
+    } catch (e) {
+      // Not JSON, proceed with raw text
+    }
     
     // Look for code blocks with different language identifiers
-    const codeMatch = text.match(/```(?:react|javascript|jsx)\n([\s\S]*?)```/);
+    const codeMatch = text.match(/```(?:react|javascript|jsx|tsx|typescript)\n([\s\S]*?)```/);
     
     const modelResponse: ChatMessage = {
-      role: "model",
+      role: "assistant",
       parts: [{ text }]
     };
     
@@ -245,13 +284,6 @@ Please follow above provided template style and made changes accordingly the det
       throw new Error('Invalid API key');
     } else if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
       throw new RateLimitError();
-    }
-    
-    // Check for internal server error (500)
-    if (error.message?.includes('500')) {
-      console.log('Server error detected. Retrying in 60 seconds...');
-      await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 60 seconds
-      return generatePDFContent(history, newMessage); // Retry the request
     }
     
     throw error;

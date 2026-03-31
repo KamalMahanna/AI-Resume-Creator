@@ -27,29 +27,14 @@ export default function APIKeyModal({
   const nodeRef = useRef(null);
   const overlayRef = useRef(null);
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!apiKey.trim()) {
       setError('Please enter an API key');
       return;
     }
 
-    setIsValidating(true);
-    setError('');
-
-    try {
-      const isValid = await validateApiKey(apiKey);
-      if (!isValid) {
-        setError('Failed to validate API key');
-        return;
-      }
-
-      onSave(apiKey);
-      onClose();
-    } catch (err) {
-      setError('Failed to validate API key. Please try again.');
-    } finally {
-      setIsValidating(false);
-    }
+    onSave(apiKey.trim());
+    onClose();
   };
 
   return (
@@ -80,7 +65,7 @@ export default function APIKeyModal({
         {isFirstRequest && !existingKey && (
           <div className="mb-6 p-4 border border-blue-500/20 rounded-lg bg-blue-500/20">
             <p className="text-sm text-blue-200">
-              To use this resume builder, you'll need to add your Gemini API key first.
+              To use this resume builder, you'll need to add your Groq API key first.
               Don't worry, this is a one-time setup!
             </p>
           </div>
@@ -90,9 +75,9 @@ export default function APIKeyModal({
           <div className="mb-6 space-y-4 text-sm text-gray-300">
             <p>To get your API key:</p>
             <ol className="list-decimal ml-4 space-y-2">
-              <li>Visit the <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google AI Studio</a></li>
-              <li>Create or select a project</li>
-              <li>Click on "Get API key"</li>
+              <li>Visit the <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Groq Cloud</a></li>
+              <li>Sign in or create an account</li>
+              <li>Click on "Create API Key"</li>
               <li>Copy and paste your API key below</li>
             </ol>
           </div>
@@ -110,7 +95,7 @@ export default function APIKeyModal({
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 className="w-full px-3 py-2 bg-gray-800/70 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                placeholder="Enter your Gemini API key"
+                placeholder="Enter your Groq API key"
               />
               {error && (
                 <p className="mt-2 text-sm text-red-400">{error}</p>

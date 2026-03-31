@@ -1,0 +1,3 @@
+# Netlify environment variables template
+# Rename this to .env.production and add values before deployment
+VITE_API_URL=https://ai-resume-creator-backend.onrender.com

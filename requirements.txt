@@ -1,4 +1,5 @@
-flask
+Flask
 flask-cors
-google-genai
+langchain-groq
+langchain-core
 gunicorn

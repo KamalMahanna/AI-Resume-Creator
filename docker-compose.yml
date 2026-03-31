@@ -1,16 +1,16 @@
-version: "3.9"
-
 services:
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        - VITE_API_URL=/api
     ports:
       - "5173:5173"
     depends_on:
       - backend
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=/api
 
   backend:
     build:
@@ -20,4 +20,4 @@ services:
       - "8000:8000"
     environment:
       - FLASK_ENV=production
-      - CORS_ORIGINS=http://localhost:5173
+      - CORS_ORIGINS=https://ai-resume-creator.netlify.app

@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: ai-resume-creator-backend
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:8000 --timeout 300"
+    workingDir: ./backend
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: CORS_ORIGINS
+        value: "https://ai-resume-creator.netlify.app,https://ai-resume-creator-backend.onrender.com"
+    
+  - type: web
+    name: ai-resume-creator-frontend
+    env: node
+    plan: free
+    buildCommand: "cd frontend && npm install && npm run build"
+    startCommand: "npm run preview"
+    workingDir: ./frontend
+    routes:
+      - path: /*
+        matchType: prefix
+    envVars:
+      - key: VITE_API_URL
+        value: "https://ai-resume-creator-backend.onrender.com"
