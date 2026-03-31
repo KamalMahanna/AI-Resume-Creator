@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { PDFViewer, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { transform } from '@babel/standalone';
 
 interface PDFPreviewProps {
   content: string;
@@ -11,18 +12,21 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
 
   useEffect(() => {
     try {
-      // Remove all imports and export statements
-      let cleanCode = content
+      // Remove module syntax first, then transpile JSX to executable JS.
+      const cleanCode = content
         .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
-        .replace(/^export\s+default\s+/m, '')
+        .replace(/^export\s+default\s+ResumeDocument\s*;?\s*$/gm, '')
         .trim();
 
-      // If code ends with semicolon after export removal, remove it
-      if (cleanCode.endsWith(';')) {
-        cleanCode = cleanCode.slice(0, -1);
+      const result = transform(cleanCode, {
+        presets: ['react'],
+        filename: 'resume.tsx',
+      });
+
+      if (!result.code) {
+        throw new Error('Failed to transform code');
       }
 
-      // Create function that returns the component
       const createComponent = new Function(
         'React',
         'Document',
@@ -30,7 +34,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
         'Text',
         'View',
         'StyleSheet',
-        `return (${cleanCode})`
+        `${result.code}\nreturn ResumeDocument;`
       );
 
       // Create the component with the required dependencies

@@ -231,7 +231,12 @@ export default function App() {
 
   const handleDownload = useCallback(async () => {
     try {
-      const result = transform(pdfContent, {
+      const cleanCode = pdfContent
+        .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
+        .replace(/^export\s+default\s+ResumeDocument\s*;?\s*$/gm, '')
+        .trim();
+
+      const result = transform(cleanCode, {
         presets: ['react'],
         filename: 'resume.tsx',
       });
@@ -240,16 +245,6 @@ export default function App() {
         throw new Error('Failed to transform code');
       }
 
-      // Remove all imports and export statements
-      let cleanCode = result.code
-        .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
-        .replace(/^export\s+default\s+/m, '')
-        .trim();
-
-      if (cleanCode.endsWith(';')) {
-        cleanCode = cleanCode.slice(0, -1);
-      }
-      
       const createComponent = new Function(
         'React', 
         'Document', 
@@ -257,7 +252,7 @@ export default function App() {
         'Text', 
         'View', 
         'StyleSheet',
-        `return (${cleanCode})`
+        `${result.code}\nreturn ResumeDocument;`
       );
 
       const ResumeComponent = createComponent(React, Document, Page, Text, View, StyleSheet);
