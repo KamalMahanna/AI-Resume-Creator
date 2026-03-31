@@ -20,6 +20,10 @@ def get_api_key():
         return None
     return api_key
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"}), 200
+
 @app.route("/generate", methods=["POST"])
 def generate_response():
     api_key = get_api_key()
@@ -65,8 +69,8 @@ def generate_response():
         if isinstance(content, list):
             content = "".join([part.get("text", "") if isinstance(part, dict) else str(part) for part in content])
 
-        # Return the response content text
-        return content
+        # Return the response content as JSON
+        return jsonify({"content": content})
 
     except Exception as e:
         # Log the error

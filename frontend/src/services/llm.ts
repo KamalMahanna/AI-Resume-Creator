@@ -214,6 +214,9 @@ Please follow above provided template style and made changes accordingly the det
         history: apiHistory,
         message: newMessage.parts[0].text
       })
+    }).catch(err => {
+      console.error('Fetch error:', err);
+      throw new Error(`Network error: ${err.message}. Backend may be down. Check: https://ai-resume-creator-backend.onrender.com/health`);
     });
 
     if (!response.ok) {
@@ -221,7 +224,8 @@ Please follow above provided template style and made changes accordingly the det
       throw new Error(errorData.message || `API request failed with status ${response.status}`);
     }
 
-    let text = await response.text();
+    const data = await response.json();
+    let text = data.content;
     
     // Check if the response is JSON (sometimes LLM or API returns structured data)
     try {
