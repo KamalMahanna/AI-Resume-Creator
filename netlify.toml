@@ -2,17 +2,9 @@
   base = "frontend"
   command = "npm install && npm run build"
   publish = "dist"
+  environment = { VITE_API_URL = "https://ai-resume-creator-backend.onrender.com" }
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[context.production.environment]
-  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"
-
-[context.deploy-preview.environment]
-  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"
-
-[context.branch-deploy.environment]
-  VITE_API_URL = "https://ai-resume-creator-backend.onrender.com"
