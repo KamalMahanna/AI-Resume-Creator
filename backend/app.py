@@ -32,7 +32,7 @@ def generate_response():
 
         # Initialize the LangChain ChatGroq model
         llm = ChatGroq(
-            model="moonshotai/kimi-k2-instruct-0905", groq_api_key=api_key
+            model="openai/gpt-oss-120b", groq_api_key=api_key
         )
 
         # Convert history format to LangChain messages
