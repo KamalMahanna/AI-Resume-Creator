@@ -203,11 +203,7 @@ Please follow above provided template style and made changes accordingly the det
     }
 
     // Send request to backend API
-    // VITE_API_URL is set by build system (environment variable)
-    const apiBaseUrl = import.meta.env.VITE_API_URL;
-    if (!apiBaseUrl) {
-      throw new Error('API URL not configured. Set VITE_API_URL environment variable.');
-    }
+    const apiBaseUrl = 'https://ai-resume-creator-backend.onrender.com';
     const response = await fetch(`${apiBaseUrl}/generate`, {
       method: 'POST',
       headers: {
