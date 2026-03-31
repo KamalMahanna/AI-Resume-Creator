@@ -233,7 +233,7 @@ export default function App() {
     try {
       const cleanCode = pdfContent
         .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
-        .replace(/^export\s+default\s+ResumeDocument\s*;?\s*$/gm, '')
+        .replace(/export\s+default\s+/, 'const __DEFAULT_EXPORT__ = ')
         .trim();
 
       const result = transform(cleanCode, {
@@ -252,10 +252,13 @@ export default function App() {
         'Text', 
         'View', 
         'StyleSheet',
-        `${result.code}\nreturn ResumeDocument;`
+        `${result.code}\nreturn (typeof __DEFAULT_EXPORT__ !== 'undefined' ? __DEFAULT_EXPORT__ : (typeof ResumeDocument !== 'undefined' ? ResumeDocument : null));`
       );
 
       const ResumeComponent = createComponent(React, Document, Page, Text, View, StyleSheet);
+      if (!ResumeComponent) {
+        throw new Error('Could not resolve exported resume component');
+      }
       const blob = await pdf(<ResumeComponent />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -265,11 +268,12 @@ export default function App() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading PDF:', error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
       // Show PDF error in UI without adding to chat history
       const frontendOnlyMessages = [...messages];
       frontendOnlyMessages.push({
         role: "assistant",
-        parts: [{ text: 'Error downloading PDF. Please try again.' }]
+        parts: [{ text: `Error downloading PDF: ${errorMsg}` }]
       });
       setMessages(frontendOnlyMessages);
     }

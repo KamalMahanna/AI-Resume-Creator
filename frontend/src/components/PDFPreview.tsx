@@ -12,10 +12,10 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
 
   useEffect(() => {
     try {
-      // Remove module syntax first, then transpile JSX to executable JS.
+      // Remove imports and normalize default export so generated module code can run in Function().
       const cleanCode = content
         .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
-        .replace(/^export\s+default\s+ResumeDocument\s*;?\s*$/gm, '')
+        .replace(/export\s+default\s+/, 'const __DEFAULT_EXPORT__ = ')
         .trim();
 
       const result = transform(cleanCode, {
@@ -34,11 +34,14 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
         'Text',
         'View',
         'StyleSheet',
-        `${result.code}\nreturn ResumeDocument;`
+        `${result.code}\nreturn (typeof __DEFAULT_EXPORT__ !== 'undefined' ? __DEFAULT_EXPORT__ : (typeof ResumeDocument !== 'undefined' ? ResumeDocument : null));`
       );
 
       // Create the component with the required dependencies
       const Component = createComponent(React, Document, Page, Text, View, StyleSheet);
+      if (!Component) {
+        throw new Error('Could not resolve exported resume component');
+      }
       setResumeComponent(() => Component);
       setError(null);
     } catch (err) {
