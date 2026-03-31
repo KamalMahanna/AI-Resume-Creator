@@ -202,7 +202,6 @@ Please follow above provided template style and made changes accordingly the det
       throw new Error('API key not found');
     }
 
-    // Send request to backend API
     const apiBaseUrl = 'https://ai-resume-creator-tmfr.onrender.com';
     const response = await fetch(`${apiBaseUrl}/generate`, {
       method: 'POST',
