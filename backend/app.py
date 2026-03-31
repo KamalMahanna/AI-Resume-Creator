@@ -38,7 +38,7 @@ def generate_response():
         # Initialize the LangChain ChatGroq model
         # Using Groq's available models - verify model availability in Groq console
         llm = ChatGroq(
-            model="mixtral-8x7b-32768", groq_api_key=api_key
+            model="openai/gpt-oss-120b", groq_api_key=api_key
         )
 
         # Convert history format to LangChain messages
