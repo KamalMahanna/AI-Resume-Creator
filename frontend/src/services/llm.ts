@@ -203,7 +203,7 @@ Please follow above provided template style and made changes accordingly the det
     }
 
     // Send request to backend API
-    const apiBaseUrl = 'https://ai-resume-creator-backend.onrender.com';
+    const apiBaseUrl = 'https://ai-resume-creator-tmfr.onrender.com';
     const response = await fetch(`${apiBaseUrl}/generate`, {
       method: 'POST',
       headers: {
@@ -216,7 +216,7 @@ Please follow above provided template style and made changes accordingly the det
       })
     }).catch(err => {
       console.error('Fetch error:', err);
-      throw new Error(`Network error: ${err.message}. Backend may be down. Check: https://ai-resume-creator-backend.onrender.com/health`);
+      throw new Error(`Network error: ${err.message}. Backend may be down. Check: https://ai-resume-creator-tmfr.onrender.com/health`);
     });
 
     if (!response.ok) {
