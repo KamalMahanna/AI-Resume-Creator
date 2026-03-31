@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import ReactMarkdown, { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import CodeBlock from './components/CodeBlock';
 import { RefreshCw, Download, Send, Key } from 'lucide-react';
 import { getStoredApiKey, storeApiKey, removeApiKey } from './services/apiKey';
@@ -233,6 +233,9 @@ export default function App() {
     try {
       const cleanCode = pdfContent
         .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
+        .replace(/fontFamily\s*:\s*['"]Arial['"]\s*,?/g, '')
+        .replace(/>\s+</g, '><')
+        .replace(/<\/Text>\s+<Text/g, '</Text><Text')
         .replace(/export\s+default\s+/, 'const __DEFAULT_EXPORT__ = ')
         .trim();
 
@@ -241,7 +244,7 @@ export default function App() {
         filename: 'resume.tsx',
       });
 
-      if (!result.code) {
+      if (!result?.code?.trim()) {
         throw new Error('Failed to transform code');
       }
 
@@ -255,7 +258,14 @@ export default function App() {
         `${result.code}\nreturn (typeof __DEFAULT_EXPORT__ !== 'undefined' ? __DEFAULT_EXPORT__ : (typeof ResumeDocument !== 'undefined' ? ResumeDocument : null));`
       );
 
-      const ResumeComponent = createComponent(React, Document, Page, Text, View, StyleSheet);
+      const resolved = createComponent(React, Document, Page, Text, View, StyleSheet);
+      const ResumeComponent =
+        typeof resolved === 'function'
+          ? (resolved as React.ComponentType)
+          : React.isValidElement(resolved)
+            ? (() => resolved)
+            : null;
+
       if (!ResumeComponent) {
         throw new Error('Could not resolve exported resume component');
       }

@@ -15,6 +15,9 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
       // Remove imports and normalize default export so generated module code can run in Function().
       const cleanCode = content
         .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
+        .replace(/fontFamily\s*:\s*['"]Arial['"]\s*,?/g, '')
+        .replace(/>\s+</g, '><')
+        .replace(/<\/Text>\s+<Text/g, '</Text><Text')
         .replace(/export\s+default\s+/, 'const __DEFAULT_EXPORT__ = ')
         .trim();
 
@@ -23,7 +26,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
         filename: 'resume.tsx',
       });
 
-      if (!result.code) {
+      if (!result?.code?.trim()) {
         throw new Error('Failed to transform code');
       }
 
@@ -37,11 +40,19 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
         `${result.code}\nreturn (typeof __DEFAULT_EXPORT__ !== 'undefined' ? __DEFAULT_EXPORT__ : (typeof ResumeDocument !== 'undefined' ? ResumeDocument : null));`
       );
 
-      // Create the component with the required dependencies
-      const Component = createComponent(React, Document, Page, Text, View, StyleSheet);
+      // Create and normalize the exported value into a valid component type.
+      const resolved = createComponent(React, Document, Page, Text, View, StyleSheet);
+      const Component =
+        typeof resolved === 'function'
+          ? (resolved as React.ComponentType)
+          : React.isValidElement(resolved)
+            ? (() => resolved)
+            : null;
+
       if (!Component) {
         throw new Error('Could not resolve exported resume component');
       }
+      // Setter receives a function updater; wrap to store the component function itself.
       setResumeComponent(() => Component);
       setError(null);
     } catch (err) {
