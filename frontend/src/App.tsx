@@ -240,7 +240,15 @@ export default function App() {
         throw new Error('Failed to transform code');
       }
 
-      const componentCode = result.code.replace(/import.*?;/g, '').replace(/export default.*?;/, '');
+      // Remove all imports and export statements
+      let cleanCode = result.code
+        .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
+        .replace(/^export\s+default\s+/m, '')
+        .trim();
+
+      if (cleanCode.endsWith(';')) {
+        cleanCode = cleanCode.slice(0, -1);
+      }
       
       const createComponent = new Function(
         'React', 
@@ -249,7 +257,7 @@ export default function App() {
         'Text', 
         'View', 
         'StyleSheet',
-        `${componentCode} return ResumeDocument;`
+        `return (${cleanCode})`
       );
 
       const ResumeComponent = createComponent(React, Document, Page, Text, View, StyleSheet);

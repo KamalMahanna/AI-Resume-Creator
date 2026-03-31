@@ -1,8 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
 import { PDFViewer, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { transform } from '@babel/standalone';
-
-// Remove Font registration block entirely
 
 interface PDFPreviewProps {
   content: string;
@@ -14,22 +11,18 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
 
   useEffect(() => {
     try {
-      const codeToTransform = content;
+      // Remove all imports and export statements
+      let cleanCode = content
+        .replace(/^import\s+.*?from\s+['"].*?['"];?\n/gm, '')
+        .replace(/^export\s+default\s+/m, '')
+        .trim();
 
-      // Transform the code string into a component
-      const result = transform(codeToTransform, {
-        presets: ['react'],
-        filename: 'resume.tsx',
-      });
-
-      if (!result.code) {
-        throw new Error('Failed to transform code');
+      // If code ends with semicolon after export removal, remove it
+      if (cleanCode.endsWith(';')) {
+        cleanCode = cleanCode.slice(0, -1);
       }
 
-      // Extract the component part (everything between the imports and the export)
-      const componentCode = result.code.replace(/import.*?;/g, '').replace(/export default.*?;/, '');
-
-      // Create a function that returns the component
+      // Create function that returns the component
       const createComponent = new Function(
         'React',
         'Document',
@@ -37,7 +30,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = memo(({ content }) => {
         'Text',
         'View',
         'StyleSheet',
-        `${componentCode} return ResumeDocument;`
+        `return (${cleanCode})`
       );
 
       // Create the component with the required dependencies
